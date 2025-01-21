@@ -1,0 +1,18 @@
+steps:
+  # Docker Build app
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/gcp-devops-436118/doctopdf-repository/doctopdf', '-f', 'Dockerfile.web', '.']
+
+  # Docker Push app img
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/gcp-devops-436118/doctopdf-repository/doctopdf']
+  
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'convert', '--image', 'gcr.io/gcp-devops-436118/doctopdf', '--region', 'us-central1']
+  images:
+  - gcr.io/gcp-devops-436118/doctopdf
+
+options:
+  logging: CLOUD_LOGGING_ONLY
